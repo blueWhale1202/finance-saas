@@ -8,8 +8,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Plus } from "lucide-react";
 import { columns } from "./columns";
 
-import { useGetAccounts } from "@/features/accounts/api/use-accounts-get";
 import { useBulkDeleteAccounts } from "@/features/accounts/api/use-bulk-delete";
+import { useGetAccounts } from "@/features/accounts/api/use-get-accounts";
 import { useNewAccount } from "@/features/hooks/use-new-account";
 
 export default function AccountsPage() {
