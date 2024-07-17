@@ -1,6 +1,8 @@
-## React query
+## Note
 
-I render data on server not good
+-   Handle HTTP exception in Honojs
+-   Fetch data on server with react-query
+-   Handle react-hook-form with server action
 
 ## Database
 
