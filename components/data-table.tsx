@@ -1,5 +1,6 @@
 "use client";
 
+import { useConfirm } from "@/hooks/use-confirm";
 import { useState } from "react";
 
 import {
@@ -25,6 +26,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+
 import { Trash } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
@@ -42,6 +44,11 @@ export function DataTable<TData, TValue>({
     disable,
     onDelete,
 }: DataTableProps<TData, TValue>) {
+    const [ConfirmDialog, confirm] = useConfirm(
+        "Are you sure?",
+        "You are about to perform a bulk delete operation. This action cannot be undone."
+    );
+
     const [sorting, setSorting] = useState<SortingState>([]);
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
     const [rowSelection, setRowSelection] = useState({});
@@ -65,6 +72,7 @@ export function DataTable<TData, TValue>({
 
     return (
         <div>
+            <ConfirmDialog />
             <div className="flex items-center py-4">
                 <Input
                     placeholder={`Search by ${filterKey}`}
@@ -87,9 +95,18 @@ export function DataTable<TData, TValue>({
                         variant="outline"
                         className="ml-auto font-normal text-xs"
                         disabled={disable}
+                        onClick={async () => {
+                            const ok = await confirm();
+
+                            if (ok) {
+                                onDelete(table.getSelectedRowModel().rows);
+                                table.resetRowSelection();
+                            }
+                        }}
                     >
                         <Trash className="size-4 mr-2" />
-                        Delete
+                        Delete (
+                        {table.getFilteredSelectedRowModel().rows.length})
                     </Button>
                 )}
             </div>
