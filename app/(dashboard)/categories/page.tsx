@@ -4,39 +4,35 @@ import { DataTable } from "@/components/data-table";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-
+import { useBulkDeleteCategories } from "@/features/categories/api/use-bulk-delete";
+import { useGetCategories } from "@/features/categories/api/use-get-categories";
+import { useNewCategory } from "@/features/categories/hooks/use-new-category";
 import { Plus } from "lucide-react";
 import { columns } from "./columns";
 
-import { useBulkDeleteAccounts } from "@/features/accounts/api/use-bulk-delete";
-import { useGetAccounts } from "@/features/accounts/api/use-get-accounts";
-import { useNewAccount } from "@/features/accounts/hooks/use-new-account";
+export default function CategoriesPage() {
+    const { onOpen } = useNewCategory();
+    const categoriesQuery = useGetCategories();
+    const deleteCategories = useBulkDeleteCategories();
 
-export default function AccountsPage() {
-    const { onOpen } = useNewAccount();
-    const accountsQuery = useGetAccounts();
-    const deleteAccounts = useBulkDeleteAccounts();
+    const isDisable = categoriesQuery.isLoading || deleteCategories.isPending;
 
-    const isDisable = accountsQuery.isLoading || deleteAccounts.isPending;
-
-    const accounts = accountsQuery.data ?? [];
-
-    if (accountsQuery.isLoading) {
+    if (categoriesQuery.isLoading) {
         return (
             <div className="max-w-screen-2xl mx-auto w-full pb-10 -mt-24">
                 <Card className="border-none drop-shadow-sm">
                     <CardHeader className="gap-y-2 lg:flex-row lg:items-center lg:justify-between">
                         <CardTitle className="text-xl line-clamp-1">
-                            Accounts Page
+                            Categories Page
                         </CardTitle>
-                        <Skeleton className="h-8 w-48" />
+                        <Skeleton className="w-48 h-8" />
                     </CardHeader>
                     <CardContent className="space-y-2">
-                        <Skeleton className="h-8 w-full" />
-                        <Skeleton className="h-8 w-full" />
-                        <Skeleton className="h-8 w-full" />
-                        <Skeleton className="h-8 w-full" />
-                        <Skeleton className="h-8 w-full" />
+                        <Skeleton className="w-full h-10" />
+                        <Skeleton className="w-full h-10" />
+                        <Skeleton className="w-full h-10" />
+                        <Skeleton className="w-full h-10" />
+                        <Skeleton className="w-full h-10" />
                     </CardContent>
                 </Card>
             </div>
@@ -48,22 +44,22 @@ export default function AccountsPage() {
             <Card className="border-none drop-shadow-sm">
                 <CardHeader className="gap-y-2 lg:flex-row lg:items-center lg:justify-between">
                     <CardTitle className="text-xl line-clamp-1">
-                        Accounts Page
+                        Categories Page
                     </CardTitle>
                     <Button size="sm" onClick={onOpen}>
                         <Plus className="size-4 mr-2" />
-                        Add new account
+                        Add category
                     </Button>
                 </CardHeader>
                 <CardContent>
                     <DataTable
-                        filterKey="email"
-                        columns={columns}
-                        data={accounts}
                         disable={isDisable}
+                        columns={columns}
+                        data={categoriesQuery.data || []}
+                        filterKey="name"
                         onDelete={(rows) => {
                             const ids = rows.map((r) => r.original.id);
-                            deleteAccounts.mutate({ ids });
+                            deleteCategories.mutate({ ids });
                         }}
                     />
                 </CardContent>

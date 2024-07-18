@@ -42,7 +42,7 @@ export const useConfirm: TypeHook = (title, message) => {
     };
 
     const ConfirmDialog = () => (
-        <Dialog open={promise !== null}>
+        <Dialog open={promise !== null} onOpenChange={handleClose}>
             <DialogContent>
                 <DialogHeader>
                     <DialogTitle>{title}</DialogTitle>

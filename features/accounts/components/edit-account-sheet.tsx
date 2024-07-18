@@ -13,7 +13,7 @@ import { AccountForm } from "./account-form";
 import { Loader2 } from "lucide-react";
 import { z } from "zod";
 
-import { useOpenAccount } from "@/features/hooks/use-open-account";
+import { useOpenAccount } from "@/features/accounts/hooks/use-open-account";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useDeleteAccount } from "../api/use-delete-account";
 import { useEditAccount } from "../api/use-edit-account";
@@ -30,7 +30,7 @@ export const EditAccountSheet = () => {
 
     const [ConfirmDialog, confirm] = useConfirm(
         "Are you sure?",
-        "You are about to delete this transaction. This action cannot be undone."
+        "You are about to delete this account. This action cannot be undone."
     );
 
     const accountQuery = useGetAccount(id);
