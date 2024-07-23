@@ -12,7 +12,7 @@ import {
     insertTransactionSchema,
     transactions,
 } from "@/db/schema";
-import { and, desc, eq, gte, inArray, lte, sql } from "drizzle-orm";
+import { and, desc, eq, gte, inArray, lte } from "drizzle-orm";
 
 const app = new Hono()
     .get(
@@ -145,6 +145,26 @@ const app = new Hono()
         }
     )
     .post(
+        "/bulk-create",
+        clerkMiddleware(),
+        zValidator("json", z.array(insertTransactionSchema.omit({ id: true }))),
+        async (c) => {
+            const auth = getAuth(c);
+            const values = c.req.valid("json");
+
+            if (!auth?.userId) {
+                return c.json({ error: "Unauthorized" }, 401);
+            }
+
+            const data = await db
+                .insert(transactions)
+                .values(values)
+                .returning();
+
+            return c.json({ data });
+        }
+    )
+    .post(
         "/bulk-delete",
         clerkMiddleware(),
         zValidator(
@@ -183,7 +203,9 @@ const app = new Hono()
                 .where(
                     inArray(
                         transactions.id,
-                        sql`select id from ${transactionToDelete}`
+                        db
+                            .select({ id: transactionToDelete.id })
+                            .from(transactionToDelete)
                     )
                 )
                 .returning({ id: transactions.id });
@@ -200,16 +222,12 @@ const app = new Hono()
                 id: z.string(),
             })
         ),
-        zValidator(
-            "json",
-            insertTransactionSchema.omit({
-                id: true,
-            })
-        ),
+        zValidator("json", insertTransactionSchema.omit({ id: true })),
         async (c) => {
             const auth = getAuth(c);
             const { id } = c.req.valid("param");
             const values = c.req.valid("json");
+            console.log("🚀 ~ values:", values);
 
             if (!auth?.userId) {
                 return c.json({ error: "Unauthorized" }, 401);
@@ -242,10 +260,13 @@ const app = new Hono()
                 .where(
                     inArray(
                         transactions.id,
-                        sql`select id from ${transactionToUpdate}`
+                        db
+                            .select({ id: transactionToUpdate.id })
+                            .from(transactionToUpdate)
                     )
                 )
                 .returning();
+            console.log("🚀 ~ data:", data);
 
             if (!data) {
                 return c.json({ error: "Not found" }, 404);
@@ -297,7 +318,9 @@ const app = new Hono()
                 .where(
                     inArray(
                         transactions.id,
-                        sql`select id from ${transactionToDelete}`
+                        db
+                            .select({ id: transactionToDelete.id })
+                            .from(transactionToDelete)
                     )
                 )
                 .returning({ id: transactions.id });

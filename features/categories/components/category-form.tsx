@@ -63,9 +63,9 @@ export const CategoryForm = ({
                             <FormLabel>Name</FormLabel>
                             <FormControl>
                                 <Input
+                                    {...field}
                                     disabled={disabled}
                                     placeholder="e.g. Cash, Bank, Credit card"
-                                    {...field}
                                 />
                             </FormControl>
                             <FormMessage />

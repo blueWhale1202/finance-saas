@@ -4,36 +4,35 @@ import { InferRequestType, InferResponseType } from "hono/client";
 import { toast } from "sonner";
 
 type RequestType = InferRequestType<
-    (typeof client.api.categories)[":id"]["$patch"]
+    (typeof client.api.transactions)[":id"]["$patch"]
 >["json"];
+
 type ResponseType = InferResponseType<
-    (typeof client.api.categories)[":id"]["$patch"]
+    (typeof client.api.transactions)[":id"]["$patch"]
 >;
 
-export const useEditCategory = (id?: string) => {
+export const useEditTransaction = (id?: string) => {
     const queryClient = useQueryClient();
 
     const mutation = useMutation<ResponseType, Error, RequestType>({
         mutationFn: async (json) => {
-            const response = await client.api.categories[":id"].$patch({
+            const response = await client.api.transactions[":id"].$patch({
                 param: { id },
                 json,
             });
-
             return await response.json();
         },
-
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["categories"] });
-            queryClient.invalidateQueries({ queryKey: ["category", { id }] });
             queryClient.invalidateQueries({ queryKey: ["transactions"] });
+            queryClient.invalidateQueries({
+                queryKey: ["transaction", { id }],
+            });
             // TODO: Investigate summary
 
-            toast.success("Category edited");
+            toast.success("Transaction edited");
         },
-
         onError: () => {
-            toast.error("Failed to edit category");
+            toast.error("Failed to edit transaction");
         },
     });
 

@@ -1,5 +1,3 @@
-import { insertAccountSchema } from "@/db/schema";
-
 import {
     Sheet,
     SheetContent,
@@ -8,22 +6,15 @@ import {
     SheetTitle,
 } from "@/components/ui/sheet";
 
-import { AccountForm } from "./account-form";
+import { AccountForm, FormValues } from "./account-form";
 
 import { Loader2 } from "lucide-react";
-import { z } from "zod";
 
 import { useOpenAccount } from "@/features/accounts/hooks/use-open-account";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useDeleteAccount } from "../api/use-delete-account";
 import { useEditAccount } from "../api/use-edit-account";
 import { useGetAccount } from "../api/use-get-account";
-
-const formSchema = insertAccountSchema.pick({
-    name: true,
-});
-
-type FormValues = z.input<typeof formSchema>;
 
 export const EditAccountSheet = () => {
     const { isOpen, onClose, id } = useOpenAccount();

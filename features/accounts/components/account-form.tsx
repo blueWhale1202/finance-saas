@@ -18,7 +18,7 @@ const formSchema = insertAccountSchema.pick({
     name: true,
 });
 
-type FormValues = z.input<typeof formSchema>;
+export type FormValues = z.input<typeof formSchema>;
 
 type Props = {
     id?: string;
@@ -62,9 +62,9 @@ export const AccountForm = ({
                             <FormLabel>Name</FormLabel>
                             <FormControl>
                                 <Input
+                                    {...field}
                                     disabled={disabled}
                                     placeholder="e.g. Cash, Bank, Credit card"
-                                    {...field}
                                 />
                             </FormControl>
                             <FormMessage />
