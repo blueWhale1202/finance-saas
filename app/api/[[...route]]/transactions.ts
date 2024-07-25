@@ -1,4 +1,4 @@
-import { parse, subDays } from "date-fns";
+import { parse, subYears } from "date-fns";
 import { Hono } from "hono";
 import { z } from "zod";
 
@@ -35,7 +35,8 @@ const app = new Hono()
             }
 
             const defaultTo = new Date();
-            const defaultFrom = subDays(defaultTo, 30);
+            // const defaultFrom = subDays(defaultTo, 30);
+            const defaultFrom = subYears(defaultTo, 1);
 
             const startDate = from
                 ? parse(from, "yyyy-MM-dd", new Date())
@@ -227,7 +228,6 @@ const app = new Hono()
             const auth = getAuth(c);
             const { id } = c.req.valid("param");
             const values = c.req.valid("json");
-            console.log("🚀 ~ values:", values);
 
             if (!auth?.userId) {
                 return c.json({ error: "Unauthorized" }, 401);
@@ -266,7 +266,6 @@ const app = new Hono()
                     )
                 )
                 .returning();
-            console.log("🚀 ~ data:", data);
 
             if (!data) {
                 return c.json({ error: "Not found" }, 404);
