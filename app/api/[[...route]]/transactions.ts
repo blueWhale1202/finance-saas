@@ -1,4 +1,4 @@
-import { parse, subYears } from "date-fns";
+import { parse, subDays } from "date-fns";
 import { Hono } from "hono";
 import { z } from "zod";
 
@@ -35,8 +35,7 @@ const app = new Hono()
             }
 
             const defaultTo = new Date();
-            // const defaultFrom = subDays(defaultTo, 30);
-            const defaultFrom = subYears(defaultTo, 1);
+            const defaultFrom = subDays(defaultTo, 30);
 
             const startDate = from
                 ? parse(from, "yyyy-MM-dd", new Date())
