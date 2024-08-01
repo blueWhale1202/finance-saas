@@ -20,10 +20,10 @@ export const useDeleteTransaction = (id?: string) => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["transactions"] });
+            queryClient.invalidateQueries({ queryKey: ["transactions"] });
             queryClient.invalidateQueries({
                 queryKey: ["transaction", { id }],
             });
-            // TODO: Investigate summary
 
             toast.success("Transaction deleted");
         },

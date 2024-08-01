@@ -24,10 +24,10 @@ export const useEditTransaction = (id?: string) => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["transactions"] });
+            queryClient.invalidateQueries({ queryKey: ["summary"] });
             queryClient.invalidateQueries({
                 queryKey: ["transaction", { id }],
             });
-            // TODO: Investigate summary
 
             toast.success("Transaction edited");
         },
